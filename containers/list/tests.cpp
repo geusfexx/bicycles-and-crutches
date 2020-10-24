@@ -1,3 +1,5 @@
+//There are only some debug tests. It's required to supplement with unit-tests.
+
 #include <singly_linked_list.cpp>
 #include <iostream>
 

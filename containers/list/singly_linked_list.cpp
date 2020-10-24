@@ -10,14 +10,14 @@ public:
     //singly_linked_list(const singly_linked_list& other);
     //operator=(const singly_linked_list& other);
     ~singly_linked_list();
-     void clear();
+    void clear();
     void push_back(T data);
     void pop_front();
     size_t size() const { return this->list_size; }
     T const & operator[](const size_t index) const;
     T& operator[](const size_t index);
+
 private:
-    //template<class T>
     class node
     {
     public:
