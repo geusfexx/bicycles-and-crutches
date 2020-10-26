@@ -34,3 +34,5 @@
 # IDE
 *.pro
 *.user
+build-*
+.gitignore
