@@ -9,6 +9,16 @@
 using namespace bac;
 
 template<class values>
+void ptint(std::vector<values>& v)
+{
+    std::cout << "{ ";
+    for (const auto& i : v) {
+        std::cout << i << " ";
+    }
+    std::cout << "}\n";
+}
+
+template<class values>
 std::vector<values> fill_vector_progressive(int count)
 {
     std::vector<values> res(count);
@@ -89,7 +99,9 @@ template<class values>
 	std::map<void(*)(std::vector<values>&), const char*> tested_functions{
 		{bac::sort_by_selection, "Selection sort"},
 		{bac::sort_by_insertion, "Insertion sort"},
-		{bac::sort_bubble, "Bubble sort"}
+		{bac::sort_bubble, "Bubble sort"},
+		{bac::sort_by_merge, "Merge sort"}
+
 	};
 
 int main()

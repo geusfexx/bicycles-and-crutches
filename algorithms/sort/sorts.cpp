@@ -2,17 +2,9 @@
 #include <string>
 #include <vector>
 #include <iostream>
-namespace bac {
+#include <iterator>
 
-template<class values>
-void ptint(std::vector<values>& v)
-{
-    std::cout << "{ ";
-    for (const auto& i : v) {
-        std::cout << i << " ";
-    }
-    std::cout << "}";
-}
+namespace bac {
 
 //complexity f = O(n^2)
 template<class values>
@@ -72,5 +64,30 @@ void sort_bubble(std::vector<values>& collection)
         }
     }
 }
+
+template <typename Iterator>
+void inner_sort(Iterator from, Iterator to)
+{
+	auto size = std::distance(from, to);
+	if (1 > size)
+		return;
+
+	auto left_to = std::next(from, size/2);
+	auto left_from = from;
+	auto right_from = std::prev(to, size/2);
+	
+
+	inner_sort(left_from, left_to);
+	inner_sort(right_from, to);
+
+}
+
+template<class values>
+void sort_by_merge(std::vector<values>& collection)
+{
+	inner_sort(collection.begin(), collection.end());
+}
+
+
 
 }
