@@ -18,6 +18,9 @@ void ptint(std::vector<values>& v)
 template<class values>
 void sort_by_selection(std::vector<values>& collection)
 {
+	if (collection.empty())
+		return;
+
     for (int i(0), min(0); i < collection.size() - 1; ++i)      //sorted part
     {
         min = i;
@@ -37,6 +40,9 @@ void sort_by_selection(std::vector<values>& collection)
 template<class values>
 void sort_by_insertion(std::vector<values>& collection)
 {
+	if (collection.empty())
+		return;
+
     for (int i(1), inserted_value(0), inserted_index(0); i < collection.size(); ++i)                            //unsorted part
     {
         inserted_value = collection[i];
@@ -54,6 +60,9 @@ void sort_by_insertion(std::vector<values>& collection)
 template<class values>
 void sort_bubble(std::vector<values>& collection)
 {
+	if (collection.empty())
+		return;
+
     for (int i(0); i < collection.size() - 1; ++i)      //unsorted part
     {
         for (int j(0); j < collection.size() - i - 1; ++j) {        //sorted part

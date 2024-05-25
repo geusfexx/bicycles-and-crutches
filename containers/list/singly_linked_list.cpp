@@ -155,14 +155,14 @@ void singly_linked_list<T>::insert(const T& data, const int& index)
         if (index - list_size) {
             this->resize(index);
         }
-        node* pprevios = this->phead;
+        node* pprevious = this->phead;
         for (int i(0); i < index - 1; ++i) //index should be int to avoid overflow size_t with negative values.
         {
-            pprevios = pprevios->pnext;
+            pprevious = pprevious->pnext;
         }
 
 
-        pprevios->pnext = new node(data, pprevios->pnext);
+        pprevious->pnext = new node(data, pprevious->pnext);
         ++list_size;
     }
 }

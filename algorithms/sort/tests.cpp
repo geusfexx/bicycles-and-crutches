@@ -1,8 +1,10 @@
 #include <iostream>
-#include <sorts.cpp>
+#include "sorts.cpp"
 #include <vector>
 #include <chrono>
 #include <ctime>
+#include <map>
+#include <limits>
 
 using namespace bac;
 
@@ -39,117 +41,64 @@ std::vector<values> fill_vector_random(int count)
     return res;
 }
 
+template<class values>
+void test_templ(void(*func)(std::vector<values>&), const std::string& title);
+
+template<class values>
+void test_templ(void(*func)(std::vector<values>&), const std::string& title)  
+{
+    std::cout << title << " is testing...\n";
+	const int array_size = 10000;
+
+	std::vector<values> empty = {};
+	std::vector<values> single_element = {1} ;
+	auto zeroes = std::vector<values>(array_size, 0);
+	auto int_max = std::vector<values>(array_size, std::numeric_limits<int>::max());
+	auto best = fill_vector_progressive<values>(array_size);
+    auto worst = fill_vector_regressive<values>(array_size);
+    auto random = fill_vector_random<values>(array_size);
+
+	auto duration_wrapper = [&func](std::vector<int>& conteiner, const std::string& occasion){
+		auto start = std::chrono::system_clock::now();
+		func(conteiner);
+		auto end = std::chrono::system_clock::now();
+		std::chrono::duration<double> diff = end-start;
+
+		std::cout << "\n\t" << occasion << "\ttime spended: " << diff.count()*1000 << " ms\n";
+	};
+
+	duration_wrapper(empty, "empty case");
+
+	duration_wrapper(single_element, "single case");
+
+	duration_wrapper(zeroes, "zeroes case");
+
+	duration_wrapper(int_max, "int_max case");
+
+	duration_wrapper(best, "best case");
+
+    duration_wrapper(worst, "worst case");
+
+    duration_wrapper(random, "random case");
+
+	std::cout << "\n";
+}
+
+
+template<class values>
+	std::map<void(*)(std::vector<values>&), const char*> tested_functions{
+		{bac::sort_by_selection, "Selection sort"},
+		{bac::sort_by_insertion, "Insertion sort"},
+		{bac::sort_bubble, "Bubble sort"}
+	};
+
 int main()
 {
 
-    std::cout << "test 1\n";
-    {
-        std::vector<int> a = fill_vector_progressive<int>(10000);
-        std::vector<int> b = fill_vector_regressive<int>(10000);
-        std::vector<int> c = fill_vector_random<int>(10000);
+	for (const auto i : tested_functions<int>)
+	{
+		test_templ<int>(i.first, i.second);
+	}
 
-        auto start = std::chrono::system_clock::now();
-        bac::sort_by_selection(a);
-        auto end = std::chrono::system_clock::now();
-        std::chrono::duration<double> diff = end-start;
-
-        //bac::ptint(a);
-        std::cout << "\n";
-        std::cout << "time left: " << diff.count()*1000 << "ms";
-        std::cout << "\n";
-
-        start = std::chrono::system_clock::now();
-        bac::sort_by_selection(b);
-        end = std::chrono::system_clock::now();
-        diff = end-start;
-
-        //bac::ptint(b);
-        std::cout << "\n";
-        std::cout << "time left: " << diff.count()*1000 << "ms";
-        std::cout << "\n";
-
-        start = std::chrono::system_clock::now();
-        bac::sort_by_selection(c);
-        end = std::chrono::system_clock::now();
-        diff = end-start;
-
-        //bac::ptint(c);
-        std::cout << "\n";
-        std::cout << "time left: " << diff.count()*1000 << "ms";
-        std::cout << "\n";
-    }
-    std::cout << "test 2\n";
-    {
-        std::vector<int> a = fill_vector_progressive<int>(10000);
-        std::vector<int> b = fill_vector_regressive<int>(10000);
-        std::vector<int> c = fill_vector_random<int>(10000);
-
-        auto start = std::chrono::system_clock::now();
-        bac::sort_by_insertion(a);
-        auto end = std::chrono::system_clock::now();
-        std::chrono::duration<double> diff = end-start;
-
-        //bac::ptint(a);
-        std::cout << "\n";
-        std::cout << "time left: " << diff.count()*1000 << "ms";
-        std::cout << "\n";
-
-        start = std::chrono::system_clock::now();
-        bac::sort_by_insertion(b);
-        end = std::chrono::system_clock::now();
-        diff = end-start;
-
-        //bac::ptint(b);
-        std::cout << "\n";
-        std::cout << "time left: " << diff.count()*1000 << "ms";
-        std::cout << "\n";
-
-        start = std::chrono::system_clock::now();
-        bac::sort_by_insertion(c);
-        end = std::chrono::system_clock::now();
-        diff = end-start;
-
-        //bac::ptint(c);
-        std::cout << "\n";
-        std::cout << "time left: " << diff.count()*1000 << "ms";
-        std::cout << "\n";
-    }
-
-    std::cout << "test 3\n";
-    {
-        std::vector<int> a = fill_vector_progressive<int>(10000);
-        std::vector<int> b = fill_vector_regressive<int>(10000);
-        std::vector<int> c = fill_vector_random<int>(10000);
-
-        auto start = std::chrono::system_clock::now();
-        bac::sort_bubble(a);
-        auto end = std::chrono::system_clock::now();
-        std::chrono::duration<double> diff = end-start;
-
-        //bac::ptint(a);
-        std::cout << "\n";
-        std::cout << "time left: " << diff.count()*1000 << "ms";
-        std::cout << "\n";
-
-        start = std::chrono::system_clock::now();
-        bac::sort_bubble(b);
-        end = std::chrono::system_clock::now();
-        diff = end-start;
-
-        //bac::ptint(b);
-        std::cout << "\n";
-        std::cout << "time left: " << diff.count()*1000 << "ms";
-        std::cout << "\n";
-
-        start = std::chrono::system_clock::now();
-        bac::sort_bubble(c);
-        end = std::chrono::system_clock::now();
-        diff = end-start;
-
-        //bac::ptint(c);
-        std::cout << "\n";
-        std::cout << "time left: " << diff.count()*1000 << "ms";
-        std::cout << "\n";
-    }
     return 0;
 }
