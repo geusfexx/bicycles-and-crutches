@@ -6,7 +6,7 @@
 #include <map>
 #include <limits>
 
-#define DEBUG_MODE
+//#define DEBUG_MODE
 
 using namespace bac;
 
@@ -51,9 +51,9 @@ void test_templ(void(*func)(std::vector<values>&), const std::string& title)
 {
     std::cout << title << " is testing...\n";
 #ifdef DEBUG_MODE
-	const int array_size = 100;
-#elif
-	const int array_size = 100000;
+	const int array_size = 10;
+#else
+	const int array_size = 10000;
 #endif
 	std::vector<values> empty = {};
 	std::vector<values> single_element = {1} ;
@@ -98,9 +98,9 @@ ptint(conteiner);
 
 template<class values>
 	std::map<void(*)(std::vector<values>&), const char*> tested_functions{
-//		{bac::sort_by_selection, "Selection sort"},
-//		{bac::sort_by_insertion, "Insertion sort"},
-//		{bac::sort_bubble, "Bubble sort"},
+		{bac::sort_by_selection, "Selection sort"},
+		{bac::sort_by_insertion, "Insertion sort"},
+		{bac::sort_bubble, "Bubble sort"},
 		{bac::sort_by_merge, "Merge sort"} //random case is worster than worst case!
 
 	};

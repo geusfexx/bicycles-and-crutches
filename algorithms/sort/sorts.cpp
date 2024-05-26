@@ -76,7 +76,7 @@ void sort_bubble(std::vector<values>& collection)
 }
 
 template <typename Iterator>
-void inner_sort(Iterator from, Iterator to)
+void inner_sort(const Iterator from, const Iterator to)
 {
 	//Base case
 	auto size = std::distance(from, to);
@@ -84,9 +84,9 @@ void inner_sort(Iterator from, Iterator to)
 		return;
 
 	//divide et impera (recursive cases)
-	auto left_to = std::next(from, size/2);
+	auto left_to = std::next(from, size / 2);
 	auto left_from = from;
-	auto right_from = std::prev(to, size/2);
+	auto right_from = std::prev(to, std::distance(left_to, to));
 
 	inner_sort(left_from, left_to);
 	inner_sort(right_from, to);
@@ -101,20 +101,22 @@ void inner_sort(Iterator from, Iterator to)
 		if (*left_from < *right_from)
 		{
 			*temp_iter = std::move(*left_from);
-			++left_from;
+			(void)++left_from;
 		} else {
 			*temp_iter = std::move(*right_from);
-			++right_from;
+			(void)++right_from;
 		}
 
-		++temp_iter;
+		(void)++temp_iter;
 
+		//either add the right collection when the left one is over 
 		if (left_from == left_to)
 		{
 			std::copy(right_from, to, temp_iter);
 			break;
 		}
 
+		//or add the left collection when the right one is over 
 		if (right_from == to)
 		{
 			std::copy(left_from, left_to, temp_iter);
@@ -127,6 +129,7 @@ void inner_sort(Iterator from, Iterator to)
 
 }
 
+//complexity f = O(n*log(n))
 template<class values>
 void sort_by_merge(std::vector<values>& collection)
 {
