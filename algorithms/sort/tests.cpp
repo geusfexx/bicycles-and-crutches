@@ -6,17 +6,9 @@
 #include <map>
 #include <limits>
 
-using namespace bac;
+#define DEBUG_MODE
 
-template<class values>
-void ptint(std::vector<values>& v)
-{
-    std::cout << "{ ";
-    for (const auto& i : v) {
-        std::cout << i << " ";
-    }
-    std::cout << "}\n";
-}
+using namespace bac;
 
 template<class values>
 std::vector<values> fill_vector_progressive(int count)
@@ -58,8 +50,11 @@ template<class values>
 void test_templ(void(*func)(std::vector<values>&), const std::string& title)  
 {
     std::cout << title << " is testing...\n";
-	const int array_size = 10000;
-
+#ifdef DEBUG_MODE
+	const int array_size = 100;
+#elif
+	const int array_size = 100000;
+#endif
 	std::vector<values> empty = {};
 	std::vector<values> single_element = {1} ;
 	auto zeroes = std::vector<values>(array_size, 0);
@@ -70,7 +65,13 @@ void test_templ(void(*func)(std::vector<values>&), const std::string& title)
 
 	auto duration_wrapper = [&func](std::vector<int>& conteiner, const std::string& occasion){
 		auto start = std::chrono::system_clock::now();
+#ifdef DEBUG_MODE
+ptint(conteiner);
+#endif
 		func(conteiner);
+#ifdef DEBUG_MODE
+ptint(conteiner);
+#endif
 		auto end = std::chrono::system_clock::now();
 		std::chrono::duration<double> diff = end-start;
 
@@ -97,10 +98,10 @@ void test_templ(void(*func)(std::vector<values>&), const std::string& title)
 
 template<class values>
 	std::map<void(*)(std::vector<values>&), const char*> tested_functions{
-		{bac::sort_by_selection, "Selection sort"},
-		{bac::sort_by_insertion, "Insertion sort"},
-		{bac::sort_bubble, "Bubble sort"},
-		{bac::sort_by_merge, "Merge sort"}
+//		{bac::sort_by_selection, "Selection sort"},
+//		{bac::sort_by_insertion, "Insertion sort"},
+//		{bac::sort_bubble, "Bubble sort"},
+		{bac::sort_by_merge, "Merge sort"} //random case is worster than worst case!
 
 	};
 

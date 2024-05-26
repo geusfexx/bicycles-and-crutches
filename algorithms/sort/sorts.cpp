@@ -6,6 +6,16 @@
 
 namespace bac {
 
+template<class values>
+void ptint(std::vector<values>& v)
+{
+    std::cout << "{ ";
+    for (const auto& i : v) {
+        std::cout << i << " ";
+    }
+    std::cout << "}\n";
+}
+
 //complexity f = O(n^2)
 template<class values>
 void sort_by_selection(std::vector<values>& collection)
@@ -68,17 +78,52 @@ void sort_bubble(std::vector<values>& collection)
 template <typename Iterator>
 void inner_sort(Iterator from, Iterator to)
 {
+	//Base case
 	auto size = std::distance(from, to);
-	if (1 > size)
+	if (size < 2)
 		return;
 
+	//divide et impera (recursive cases)
 	auto left_to = std::next(from, size/2);
 	auto left_from = from;
 	auto right_from = std::prev(to, size/2);
-	
 
 	inner_sort(left_from, left_to);
 	inner_sort(right_from, to);
+
+	//Merge both (folding implementation)
+	std::vector<typename Iterator::value_type> temp_collection(size);
+	auto temp_iter = temp_collection.begin();
+
+	//Compares elements between both chunks and insert lessers into output vector
+	while (left_from != left_to || right_from != to)
+	{
+		if (*left_from < *right_from)
+		{
+			*temp_iter = std::move(*left_from);
+			++left_from;
+		} else {
+			*temp_iter = std::move(*right_from);
+			++right_from;
+		}
+
+		++temp_iter;
+
+		if (left_from == left_to)
+		{
+			std::copy(right_from, to, temp_iter);
+			break;
+		}
+
+		if (right_from == to)
+		{
+			std::copy(left_from, left_to, temp_iter);
+			break;
+		}
+	}
+
+	//fill original vector with sorted elements from temporary collection
+	std::copy(temp_collection.begin(), temp_collection.end(), from);
 
 }
 
@@ -90,4 +135,4 @@ void sort_by_merge(std::vector<values>& collection)
 
 
 
-}
+} // namespace bac
