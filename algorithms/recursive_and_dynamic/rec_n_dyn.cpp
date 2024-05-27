@@ -1,5 +1,3 @@
-#include <iostream>
-#include <vector>
 #include "rec_n_dyn.h"
 
 //finds paths amount from 1, 1 to pos_x, pos_y coordinates
@@ -43,13 +41,4 @@ uint64_t chess_king_dyn(uint64_t pos_x, uint64_t pos_y)
 	}
 
 	return ways[pos_y][pos_x];
-}
-
-int main()
-{
-
-	std::cout << chess_king_rec(10,15) << '\n';
-	std::cout << chess_king_dyn(10,15) << '\n';
-
-    return 0;
 }
