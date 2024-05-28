@@ -1,11 +1,11 @@
 #include <iostream>
 #include "test.h"
 
-//#define DEBUG_MODE
+#define DEBUG_MODE
 
 void knapsack_solve_test()
 {
-	std::cout << "knapsack_solve is testing..." << std::endl;
+	std::cout << "knapsack_solve is testing..." << std::endl << std::endl;
 
 	const uint32_t capacity = 6;
 
@@ -46,14 +46,49 @@ void knapsack_solve_test()
 #endif
 }
 
+
+void levenshtein_distance_test()
+{
+	std::cout << "levenshtein_distance is testing..." << std::endl << std::endl;
+
+#ifdef DEBUG_MODE
+	std::cout << levenshtein_distance("", "") << '\n';
+	std::cout << levenshtein_distance("ABCD", "ABCD") << '\n';
+	std::cout << levenshtein_distance("ABCD", "AXCD") << '\n';
+	std::cout << levenshtein_distance("ABCD", "XXCD") << '\n';
+	std::cout << levenshtein_distance("ABCD", "XXXD") << '\n';
+	std::cout << levenshtein_distance("ABCD", "XXXX") << '\n';
+	std::cout << levenshtein_distance("ABCD", "XCD") << '\n';
+	std::cout << levenshtein_distance("ABCD", "CD") << '\n';
+	std::cout << levenshtein_distance("ABCD", "D") << '\n';
+	std::cout << levenshtein_distance("ABCD", "DCBA") << '\n';
+	std::cout << levenshtein_distance("ABCD", "CBAD") << '\n';
+	std::cout << levenshtein_distance("ABCD", "BACD") << '\n';
+	std::cout << levenshtein_distance("ABCD", "DBCD") << '\n';
+	std::cout << levenshtein_distance("ABCD", "DCBX") << '\n';
+	std::cout << levenshtein_distance("ABCD", "CBXX") << '\n';
+	std::cout << levenshtein_distance("ABCD", "BXXX") << '\n';
+
+	//Wiki's examples
+	std::cout << levenshtein_distance("kitten", "sitten") << '\n'; // 1
+	std::cout << levenshtein_distance("sitten", "sittin") << '\n'; // 1
+	std::cout << levenshtein_distance("sittin", "sitting") << '\n';// 1
+	std::cout << levenshtein_distance("kitten", "sitting") << '\n';// 3
+#else
+	//FIXME
+#endif
+}
+
 int main()
 {
 
 	//FIXME
 	std::cout << chess_king_rec(10,15) << '\n';
-	std::cout << chess_king_dyn(10,15) << '\n';
+	std::cout << chess_king_dyn(10,15) << std::endl << std::endl;
 
-	knapsack_solve_test();
+	//knapsack_solve_test();
+
+	levenshtein_distance_test();
 
     return 0;
 }

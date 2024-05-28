@@ -83,6 +83,41 @@ uint32_t knapsack_solve(std::vector<std::pair<uint32_t, uint32_t> > items, const
 		}
 	}
 
-	//return 42;
 	return combinations[capacity][items.size()]; // The last combination is a result
 }
+
+
+uint32_t levenshtein_distance(const std::string a, const std::string b)
+{
+	//https://en.wikipedia.org/wiki/Levenshtein_distance
+	std::vector<std::vector<uint32_t> > lev_matrix(a.size() + 1, std::vector<uint32_t>(b.size() + 1));
+
+	//Base Cases
+	for (size_t i(0); i <= a.length(); ++i)
+	{
+		lev_matrix[i][0] = i;
+	}
+
+	for (size_t j(0); j <= b.length(); ++j)
+	{
+		lev_matrix[0][j] = j;
+	}
+
+	//Conquered cases
+	for (size_t i(1); i <= a.length(); ++i)
+	{
+		for (size_t j(1); j <= b.length(); ++j)
+		{
+			if (a[i-1] == b[j - 1])
+			{
+				lev_matrix[i][j] = lev_matrix[i - 1][j - 1];
+			} else {
+				lev_matrix[i][j] = std::min(std::min(lev_matrix[i - 1][j], lev_matrix[i][j - 1]), lev_matrix[i - 1][j - 1]) + 1;
+			}
+
+		}
+	}
+
+	return lev_matrix[a.length()][b.length()]; // The last combination is a result
+}
+
