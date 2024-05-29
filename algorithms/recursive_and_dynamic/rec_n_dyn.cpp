@@ -108,13 +108,11 @@ uint32_t levenshtein_distance(const std::string a, const std::string b)
 	{
 		for (size_t j(1); j <= b.length(); ++j)
 		{
-			if (a[i-1] == b[j - 1])
-			{
+			if (a[i-1] == b[j - 1]) {
 				lev_matrix[i][j] = lev_matrix[i - 1][j - 1];
 			} else {
 				lev_matrix[i][j] = std::min(std::min(lev_matrix[i - 1][j], lev_matrix[i][j - 1]), lev_matrix[i - 1][j - 1]) + 1;
 			}
-
 		}
 	}
 
