@@ -1,20 +1,19 @@
 #include <iostream>
 #include "test.h"
 
-
 void kmp_test()
 {
 	std::vector<std::string> patterns = {
 								"abacaba",
 								"",
-								"xx"
+								"xxx"
 	};
 
 	std::vector<std::string> lines = {
 								"abcbaccabcaabcaabaabacabacabacababacabcaabadcabaacbacabaaa",
 								"",
-								"xxxxhasdfbckknbadpaojojanxc",
-								"abacaba",
+								"xxxxxxxxhasdfbckknbadpaojojanxc",
+								"abacabas",
 								"abaca"
 	};
 
@@ -22,7 +21,7 @@ void kmp_test()
 	{
 		for (auto line : lines)
 		{
-			auto result = kmp(pattern, line);
+			auto result = prefix_func_kmp(pattern, line);
 			for (auto i : result)
 			{
 				std::cout << i << "\t";
@@ -34,7 +33,13 @@ void kmp_test()
 
 int main()
 {
-	kmp_test();
+	//kmp_test();
+
+	auto result = prefix_func_kmp("aba", "ababacababxs");
+	for (auto i : result)
+	{
+		std::cout << i << "\t";
+	}
 
     return 0;
 }
