@@ -6,17 +6,18 @@
 #include <vector>
 #include <iostream>
 
-class GraphTypeSimple
+class GraphTypeBase
 {
 public:
 typedef int32_t Vertex;
 typedef std::set<Vertex> Vertexes;
 typedef std::set<std::pair<Vertex, Vertex> > EdgesSet;
+typedef std::vector<std::vector<bool> > EdgesMatrix;
 
-    class GraphTypeSimple_exception: public std::exception
+    class GraphTypeException: public std::exception
     {
     public:
-        GraphTypeSimple_exception(const std::string& message): iMessage(message){}
+        GraphTypeException(const std::string& message): iMessage(message){}
 
         const char* what() const noexcept override
         {
@@ -26,19 +27,54 @@ typedef std::set<std::pair<Vertex, Vertex> > EdgesSet;
         std::string iMessage;
     };
 
-    GraphTypeSimple(){}
-    GraphTypeSimple(const int32_t& vertexes_amount, const EdgesSet& edges) :
-		 					iVertexesAmount(vertexes_amount), iEdges(edges){}
+    GraphTypeBase(){}
 
-    void fill_edges(const int32_t& vertexes_amount, const EdgesSet& edges);
+    virtual void fill_edges(const int32_t& vertexes_amount, const EdgesSet& edges) = 0;
 
-	void print_edges() const;
+    virtual void print_edges() const = 0;
 
-    void clean();
+    virtual void clean() = 0;
 
-public:
-        int32_t iVertexesAmount = 0;
-        EdgesSet iEdges = {};
+protected:
+    int32_t iVertexesAmount;
+
 };
 
+class GraphTypeSimple : public GraphTypeBase
+{
+public:
+typedef GraphTypeBase Parent;
+
+    GraphTypeSimple(){}
+    GraphTypeSimple(const int32_t& vertexes_amount, const EdgesSet& edges) :
+		 					iEdges(edges){Parent::iVertexesAmount = vertexes_amount;}
+
+    virtual void fill_edges(const int32_t& vertexes_amount, const EdgesSet& edges);
+
+	virtual void print_edges() const;
+
+    virtual void clean();
+
+protected:
+    EdgesSet iEdges = {};
+};
+
+
+class AdjacencyMatrix : public GraphTypeBase
+{
+public:
+typedef GraphTypeBase Parent;
+
+    AdjacencyMatrix(){}
+    AdjacencyMatrix(const int32_t& vertexes_amount, const EdgesSet& edges);
+
+    virtual void fill_edges(const int32_t& vertexes_amount, const EdgesSet& edges);
+
+	virtual void print_edges() const;
+
+    virtual void clean();
+
+protected:
+    EdgesMatrix iEdges;
+};
 #endif // #ifndef GraphTypeSimple_h
