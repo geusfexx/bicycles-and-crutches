@@ -19,12 +19,27 @@ void test()
             g.fill_edges(params.first, params.second);
             g.print_edges();
             g.clean();
-        } catch (const GraphTypeSimple::GraphTypeSimple_exception& ex) {
+        } catch (const GraphTypeBase::GraphTypeException& ex) {
             std::cout << ex.what() << "\n";
         } catch (const std::exception&) {
             std::cout << "Something else wrong"<< std::endl;
         }
     }
+
+	AdjacencyMatrix am;
+    for (const auto& params: subjects)
+    {
+        try {
+            am.fill_edges(params.first, params.second);
+            am.print_edges();
+            am.clean();
+        } catch (const GraphTypeBase::GraphTypeException& ex) {
+            std::cout << ex.what() << "\n";
+        } catch (const std::exception&) {
+            std::cout << "Something else wrong"<< std::endl;
+        }
+    }
+
 }
 
 int main()
