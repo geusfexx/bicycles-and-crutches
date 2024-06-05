@@ -4,9 +4,7 @@
 #include <map>
 #include <set>
 #include <vector>
-#include <iostream>
+#include <iostream> // WTF? it causes "still reachable: 72,704 bytes in 1 blocks"
 #include "graph_example.cpp"
-
-void test();
 
 #endif // test_h
