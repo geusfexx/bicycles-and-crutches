@@ -1,20 +1,21 @@
 #ifndef GraphTypeSimple_h
 #define GraphTypeSimple_h
 
-#include <map>
-#include <set>
-#include <vector>
-#include <iostream>
-
 class GraphTypeBase
 {
 public:
-typedef int32_t 								Vertex;
-typedef std::set<Vertex>						Vertexes;
-typedef std::vector<Vertex>						AdjacencyList;
+typedef int32_t 										Vertex;
 
-typedef std::set<std::pair<Vertex, Vertex> >	EdgesSet;
-typedef std::vector<std::vector<bool> >			EdgesMatrix;
+typedef std::set<Vertex>								Vertexes;
+typedef std::vector<Vertex>								AdjacencyList;
+
+typedef std::set<std::pair<Vertex, Vertex> >			EdgesSet;
+typedef std::vector<std::vector<bool> >					EdgesMatrix;
+typedef std::map<Vertex, std::set<Vertex> >				AdjacencyMap;
+
+//TODO
+typedef std::string 									VertexName;
+typedef std::map<VertexName, std::set<VertexName> >		AdjacencyNameMap;
 
     class GraphTypeException: public std::exception
     {
@@ -49,8 +50,7 @@ public:
 typedef GraphTypeBase Parent;
 
     GraphTypeSimple(){}
-    GraphTypeSimple(const int32_t& vertexes_amount, const EdgesSet& edges) :
-		 					iEdges(edges){Parent::iVertexesAmount = vertexes_amount;}
+    GraphTypeSimple(const int32_t& vertexes_amount, const EdgesSet& edges) ;
 
     virtual void fill(const int32_t& vertexes_amount, const EdgesSet& edges);
 
@@ -64,6 +64,29 @@ protected:
     EdgesSet iEdges = {};
 };
 
+class AdjacencyMapType : public GraphTypeBase
+{
+public:
+typedef GraphTypeBase Parent;
+
+    AdjacencyMapType(){}
+    AdjacencyMapType(const int32_t& vertexes_amount, const EdgesSet& edges) ;
+
+    virtual void fill(const int32_t& vertexes_amount, const EdgesSet& edges);
+
+	virtual void print() const;
+
+    virtual void clean();
+
+	void dfs(const Vertex& start);
+
+	void dfs_impl(const Vertex& start, std::vector<bool>& used);
+
+	virtual ~AdjacencyMapType() {clean();}
+
+protected:
+    AdjacencyMap iAdjacencies = {};
+};
 
 class AdjacencyMatrix : public GraphTypeBase
 {
