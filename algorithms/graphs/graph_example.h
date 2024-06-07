@@ -78,14 +78,26 @@ typedef GraphTypeBase Parent;
 
     virtual void clean();
 
+//Depth-first search
 	void dfs(const Vertex& start);
 
 	void dfs_impl(const Vertex& start, std::vector<bool>& used);
+
+//Breadth-first search
+	void bfs(const Vertex& start);
+
+	void bfs_impl(const Vertex& start, std::deque<Vertex>& spread);
+
+// DAG checking
+	bool is_DAG();
+
+	bool DAG_check_impl(const Vertex& start, std::vector<bool>& used);
 
 	virtual ~AdjacencyMapType() {clean();}
 
 protected:
     AdjacencyMap iAdjacencies = {};
+	Vertexes iVertexes = {};
 };
 
 class AdjacencyMatrix : public GraphTypeBase

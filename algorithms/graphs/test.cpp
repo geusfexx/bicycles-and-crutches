@@ -11,7 +11,10 @@ void test()
     std::vector<std::pair<int32_t, GraphTypeSimple::EdgesSet>> subjects = {
         {4, {{0,2},{3,0},{1,2},{1,3},{2,3}}},	// ways only
         {3, {{0,2},{1,2},{2,0},{1,0}}},			// ways only
-        {5, {{0,1},{3,2},{2,0},{1,0},{2,3},{1,4},{4,1},{0,2}}},
+        {4, {{0,1},{0,2},{2,3}}},				// directed uncycled
+        {4, {{0,1},{1,2},{3,2},{1,3}}},			//directed with broken cycle
+        {4, {{0,1},{2,1},{1,3},{3,2}}},			//directed cycled
+        {5, {{0,1},{3,2},{2,0},{1,0},{2,3},{1,4},{4,1},{0,2}}}, // undirected
         {3, {}},
         {0, {}},
         {0, {{1,3},{2,3},{3,1},{2,1}}},
@@ -33,6 +36,11 @@ void test()
 		        i->print();
 				if (typeid(*i) == typeid(AdjacencyMapType)) {
 					reinterpret_cast<AdjacencyMapType*>(i)->dfs(0);
+					reinterpret_cast<AdjacencyMapType*>(i)->dfs(2);
+					reinterpret_cast<AdjacencyMapType*>(i)->bfs(0);
+					reinterpret_cast<AdjacencyMapType*>(i)->bfs(2);
+					bool result = reinterpret_cast<AdjacencyMapType*>(i)->is_DAG();
+					std::cout << "DAG: " << std::boolalpha << result << "\n";
 				}
 		        i->clean();
 		    } catch (const GraphTypeBase::GraphTypeException& ex) {

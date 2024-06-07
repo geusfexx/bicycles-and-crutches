@@ -1,6 +1,7 @@
 #include <map>
 #include <set>
 #include <vector>
+#include <deque>
 #include <string>
 #include <iostream>
 
@@ -59,7 +60,10 @@ void AdjacencyMapType::fill(const int32_t& vertexes_amount, const EdgesSet& edge
 			for (const auto& edge : edges)
 			{
 				iAdjacencies[edge.first].insert(edge.second);
-				iAdjacencies[edge.second].insert(edge.first);
+				if (iVertexes.size() != vertexes_amount) {
+					iVertexes.insert(edge.first);
+					iVertexes.insert(edge.second);
+				}
 			}
 		}
 		return;
@@ -84,9 +88,11 @@ void AdjacencyMapType::print() const
 void AdjacencyMapType::clean()
 {
     iVertexesAmount = 0;
+	iVertexes.clear();
     iAdjacencies.clear();
 }
 
+//Depth-first search
 void AdjacencyMapType::dfs(const Vertex& start)
 {
 	std::cout << "DFS: ";
@@ -99,12 +105,77 @@ void AdjacencyMapType::dfs_impl(const Vertex& start, std::vector<bool>& used)
 {
 	used[start] = true;
 	std::cout << start << "->";
-	for (auto i: iAdjacencies[start])
+	for (const auto& i: iAdjacencies[start])
 	{
 		if (not used[i]) {
 			dfs_impl(i, used);
 		}
 	}
+}
+
+//Breadth-first search
+void AdjacencyMapType::bfs(const Vertex& start)
+{
+	std::cout << "BFS: ";
+	std::deque<Vertex> spread;
+	bfs_impl(start, spread);
+	std::cout << "\b\b  \n";
+}
+
+void AdjacencyMapType::bfs_impl(const Vertex& start, std::deque<Vertex>& spread)
+{
+	std::map<Vertex, bool> passed;
+	spread.push_back(start);
+	std::cout << start << "->";
+
+	while (!spread.empty())
+	{
+		auto current = spread.front();
+		passed[current] = true;
+		spread.pop_front();
+
+		for (const auto& i: iAdjacencies[current])
+		{
+			if (!passed[i]) {
+				spread.push_back(i);
+				passed[i] = true;
+				std::cout << i << "->";
+			}
+		}
+	}
+}
+
+// DAG checking
+bool AdjacencyMapType::is_DAG()
+{
+	bool result = true;
+	for (auto v : iVertexes) {
+#ifdef DEBUG_MODE
+	std::cout << "\nDAG started... for vertex [" << v << "]\n";
+#endif //DEBUG_MODE
+		std::vector<bool> used(iVertexesAmount, false);
+		result = DAG_check_impl(v, used);
+		if (!result) {
+			break;
+		}
+	}
+	return result;
+}
+
+bool AdjacencyMapType::DAG_check_impl(const Vertex& start, std::vector<bool>& used)
+{
+	if (not iAdjacencies[start].empty()) {
+
+		used[start] = true;
+		for (const auto& i: iAdjacencies[start])
+		{
+			if (i == start) { continue; }
+			if (used[i] || !DAG_check_impl(i, used)) {
+				return false;
+			}
+		}
+	}
+	return true;
 }
 
 AdjacencyMatrix::AdjacencyMatrix(const int32_t& vertexes_amount, const EdgesSet& edges)
