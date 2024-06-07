@@ -41,6 +41,16 @@ void test()
 					reinterpret_cast<AdjacencyMapType*>(i)->bfs(2);
 					bool result = reinterpret_cast<AdjacencyMapType*>(i)->is_DAG();
 					std::cout << "DAG: " << std::boolalpha << result << "\n";
+
+					GraphTypeBase::AdjacencyList v = reinterpret_cast<AdjacencyMapType*>(i)->topological_sort();
+					{
+						std::cout << "{ ";
+						for (auto i : v) {
+							std::cout << i << " ";
+						}
+						std::cout << "}\n";
+					}
+					v.clear();
 				}
 		        i->clean();
 		    } catch (const GraphTypeBase::GraphTypeException& ex) {

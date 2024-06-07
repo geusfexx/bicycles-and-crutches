@@ -3,6 +3,7 @@
 #include <vector>
 #include <deque>
 #include <string>
+#include <algorithm>
 #include <iostream>
 
 #include "graph_example.h"
@@ -93,24 +94,27 @@ void AdjacencyMapType::clean()
 }
 
 //Depth-first search
-void AdjacencyMapType::dfs(const Vertex& start)
+AdjacencyMapType::AdjacencyList AdjacencyMapType::dfs(const Vertex& start)
 {
 	std::cout << "DFS: ";
+    AdjacencyList result;
 	std::vector<bool> used(iVertexesAmount, false);
-	dfs_impl(start, used);
+    dfs_impl(start, used, result);
 	std::cout << "\b\b  \n";
+    return result;
 }
 
-void AdjacencyMapType::dfs_impl(const Vertex& start, std::vector<bool>& used)
+void AdjacencyMapType::dfs_impl(const Vertex& start, std::vector<bool>& used, AdjacencyList& output)
 {
 	used[start] = true;
-	std::cout << start << "->";
+    std::cout << start << "->";
 	for (const auto& i: iAdjacencies[start])
 	{
 		if (not used[i]) {
-			dfs_impl(i, used);
+            dfs_impl(i, used, output);
 		}
 	}
+    output.push_back(start);
 }
 
 //Breadth-first search
@@ -159,6 +163,7 @@ bool AdjacencyMapType::is_DAG()
 			break;
 		}
 	}
+
 	return result;
 }
 
@@ -176,6 +181,18 @@ bool AdjacencyMapType::DAG_check_impl(const Vertex& start, std::vector<bool>& us
 		}
 	}
 	return true;
+}
+
+GraphTypeBase::AdjacencyList AdjacencyMapType::topological_sort()
+{
+    AdjacencyList result = {};
+    if (iVertexesAmount == 0 || not is_DAG()) {
+        return result;
+    }
+    result = dfs(0); // FIXME hardcoded starting vertex. Cause it is stored by set
+
+    std::reverse(result.begin(), result.end());
+    return result;
 }
 
 AdjacencyMatrix::AdjacencyMatrix(const int32_t& vertexes_amount, const EdgesSet& edges)
