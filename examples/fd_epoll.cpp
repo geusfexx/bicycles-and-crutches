@@ -27,17 +27,27 @@ int main()
         return 1;
     }
 
-    int event_count = epoll_wait(epoll_fd, events, 1, TIMEOUT);
-    if (event_count) {
-        for (int i(0); i < event_count; i++) {
-            printf("Handling file descriptor: %u\n", events[i].data.fd);
-            len_rd = read(events[i].data.fd, buf, sizeof(buf));
-            buf[len_rd] = '\0';
-            printf("%s", buf);
-        }
+    bool exit_condition = false;
+    while(!exit_condition) {
+        int event_count = epoll_wait(epoll_fd, events, 1, TIMEOUT);
 
-    } else {
-        printf("TIMEOUT\n");
+        if (event_count) {
+            for (int i(0); i < event_count; i++) {
+                printf("Handling file descriptor: %u\n", events[i].data.fd);
+                len_rd = read(events[i].data.fd, buf, sizeof(buf));
+                buf[len_rd] = '\0';
+                if (*buf == *quit) {
+                    printf("Exit code has been received\n");
+                    exit_condition = true;
+                    break;
+                } else {
+                    printf("%s", buf);
+                }
+            }
+
+        } else {
+            printf("TIMEOUT\n");
+        }
     }
 
     if (close(epoll_fd)) {
