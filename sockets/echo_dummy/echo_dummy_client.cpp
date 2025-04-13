@@ -45,22 +45,23 @@ int main(int argc, char** argv) {
 
     while(true) {
 
-        int n = 0;
+        int msg_size = 0;
         bzero(buff, sizeof(buff));
         printf("Enter message : ");
 
-        while ((buff[n++] = getchar()) != '\n') {}
-        buff[n] = '\0';
-        n = send(client_socket, (char*)buff, sizeof(buff), MSG_NOSIGNAL);
+        while ((buff[msg_size++] = getchar()) != '\n') {}
 
-        bzero(buff, sizeof(buff));
-        recv(client_socket, (char*)buff, MAX_BUFFER_SIZE, MSG_NOSIGNAL);
-        printf("Server's respond: %s\n", buff);
-
+        buff[msg_size] = '\0';
+        send(client_socket, (char*)buff, msg_size, MSG_NOSIGNAL);
         if ((strncmp(buff, "exit", 4)) == 0) {
             printf("Exit confirmed\n");
             break;
         }
+        bzero(buff, sizeof(buff));
+        recv(client_socket, (char*)buff, MAX_BUFFER_SIZE, MSG_NOSIGNAL);
+        printf("Server's respond: %s\n", buff);
+
+
     }
 
     shutdown(client_socket, SHUT_RDWR);
