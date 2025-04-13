@@ -54,10 +54,10 @@ int main(int argc, char** argv) {
 
         bzero(buff, sizeof(buff));
 
-        int n = recv(worker_socket, (char*)buff, MAX_BUFFER_SIZE, MSG_NOSIGNAL);
+        int msg_size = recv(worker_socket, (char*)buff, MAX_BUFFER_SIZE, MSG_NOSIGNAL);
 
         printf("Client message: %s", buff);
-        send(worker_socket, (char*)buff, sizeof(buff), MSG_NOSIGNAL);
+        send(worker_socket, (char*)buff, msg_size, MSG_NOSIGNAL);
         printf("Server responded: %s\n", buff);
 
         if ((strncmp(buff, "exit", 4)) == 0) {
