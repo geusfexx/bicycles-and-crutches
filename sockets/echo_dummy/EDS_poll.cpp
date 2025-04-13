@@ -8,11 +8,15 @@
 #include <set>
 #include <sys/ioctl.h>
 #include <fcntl.h>
+#include <poll.h>
 
 #define PORT                3230
 #define INIT_DELAY          15
 #ifndef MAX_BUFFER_SIZE
     #define MAX_BUFFER_SIZE 1024
+#endif
+#ifndef POLL_SIZE
+    #define POLL_SIZE 2048
 #endif
 
 // Set socket to non-blocking mode
@@ -86,44 +90,38 @@ int main(int argc, char** argv) {
     const int server_socket = server_init();
     setNonblock(server_socket);
     std::set<int> worker_sockets;
-    struct timeval tv;
-    tv.tv_sec = 2;
-    tv.tv_usec = 0;
+
+    struct pollfd pollfd_set[POLL_SIZE];
+    pollfd_set[0].fd = server_socket;
+    pollfd_set[0].events = POLLIN;
 
     while(true) {
+        size_t index = 1;
+        for (const auto& iter : worker_sockets) {
+            pollfd_set[index].fd = iter;
+            pollfd_set[index].events = POLLIN;
+            index++;
+        }
 
-        fd_set rd_fds;
-        FD_ZERO(&rd_fds);
-        FD_SET(server_socket, &rd_fds);
+        size_t pollfd_set_size = worker_sockets.size() + 1;
+        poll(pollfd_set, pollfd_set_size, -1);
 
-        int max_num = server_socket;
-        if (!worker_sockets.empty()) {
-            max_num = std::max(max_num, *(worker_sockets.rbegin()));
-            for (const auto& socket : worker_sockets) {
-                FD_SET(socket, &rd_fds);
+        for(size_t i = 1; i < pollfd_set_size; i++) {
+            if (pollfd_set[i].revents & POLLIN){
+                bool socket_alive = true;
+                do_process(pollfd_set[i].fd, socket_alive);
+
+                if (!socket_alive) {
+                    worker_sockets.erase(pollfd_set[i].fd);
+                }
             }
         }
 
-        if (select(max_num + 1, &rd_fds, NULL, NULL, &tv)) {
-            if (FD_ISSET(server_socket, &rd_fds)) {
-                const auto socket = accept(server_socket, 0, 0);
-                printf("Client joined\n");
-                setNonblock(socket);
-                worker_sockets.insert(socket);
-            }
-
-            for (auto iter = worker_sockets.begin(); iter != worker_sockets.end(); ) {
-                if (FD_ISSET(*iter, &rd_fds)) {
-                    bool socket_alive = true;
-                    do_process(*iter, socket_alive);
-
-                    if (!socket_alive) {
-                        iter = worker_sockets.erase(iter);
-                        continue;
-                    }
-                }
-                iter++;
-            }
+        if (pollfd_set[0].revents & POLLIN){
+            const auto socket = accept(server_socket, 0, 0);
+            printf("Client joined\n");
+            setNonblock(socket);
+            worker_sockets.insert(socket);
         }
     }
 
